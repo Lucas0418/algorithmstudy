@@ -86,6 +86,7 @@ class Rbtree:
             x.parent.right = y
         y.left = x
         x.parent = y
+
     def rightRotate(self, x):
         y = x.left
         x.left = y.right
@@ -100,6 +101,30 @@ class Rbtree:
         y.right = x
         x.parent = y
 
+    def printTree(self):
+        curRow = []
+        curRow.append(self.root)
+        self.printRow(curRow)
+
+    def printRow(self, curRow):
+        nextRow = []
+        for a in curRow:
+            if a != self.NIL:
+                if a.left != self.NIL:
+                    nextRow.append(a.left)
+                if a.right != self.NIL:
+                    nextRow.append(a.right)
+                color = 'black'
+                if a.red:
+                    color = 'red'
+                print str(a.data)+'['+color+']',
+            if a == curRow[-1]:
+                print "\n"
+                if len(nextRow) == 0:
+                    break
+                else:
+                    self.printRow(nextRow)
+
 rbtree = Rbtree()
 rbtree.insert(1)
 rbtree.insert(3)
@@ -111,3 +136,4 @@ rbtree.insert(6)
 rbtree.insert(4)
 rbtree.insert(2)
 rbtree.insert(0)
+rbtree.printTree()
