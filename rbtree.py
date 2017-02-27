@@ -1,5 +1,6 @@
 #!/usr/bin/python
 #Filename: rbtree.py
+import os
 
 class RbtreeNode:
     def __init__(self, data):
@@ -14,8 +15,11 @@ class Rbtree:
     def __init__(self):
         self.NIL = RbtreeNode(None)
         self.root = self.NIL
+        self.DotString = ''
+        self.Step = 0
 
     def insert(self, nodedata):
+        self.Step += 1
         rbtreenode = RbtreeNode(nodedata)
         z = rbtreenode
         z.parent=self.NIL
@@ -125,15 +129,65 @@ class Rbtree:
                 else:
                     self.printRow(nextRow)
 
+
+    def printTreeDots(self):
+        self.DotString = 'graph{\nratio=fill;size="8,4";\n'
+        if self.root.data is not None:
+            self.DotString += 'node' + str(self.root.data) + '[' + 'label=' + str(self.root.data) + ', color=black];\n'
+            self.printCurNode(self.root)
+        else:
+            self.DotString += 'node0[label=NIL, color=black];\n'
+
+        self.DotString += '}'
+        print(self.DotString)
+        f=open("./rbtree.dot", 'wt')
+        if f is not None:
+            f.write(self.DotString)
+            f.close()
+            os.system("dot -Tjpg rbtree.dot -o rbtree" + str(self.Step) + ".jpg")
+
+
+    def printCurNode(self, node):
+        if node == self.NIL:
+            return
+
+        if node.left.data is not None:
+            self.DotString += 'node' + str(node.left.data) + '[' + 'label=' + str(node.left.data) + ', color=' + ('black' if node.left.red is False else 'red' ) + ']' + ';\n'
+            self.DotString += 'node' + str(node.data) + ' -- ' + 'node' + str(node.left.data) + ';\n'
+        else:
+            self.DotString += 'node' + str(node.data) + 'lc [label=NIL, color=black];\n'
+            self.DotString += 'node' + str(node.data) + ' -- ' + 'node' + str(node.data) + 'lc;\n'
+
+        if node.right.data is not None:
+            self.DotString += 'node' + str(node.right.data) + '[' + 'label=' + str(node.right.data) + ', color=' + ('black' if node.right.red is False else 'red' ) + ']' + ';\n'
+            self.DotString += 'node' + str(node.data) + ' -- ' + 'node' + str(node.right.data) + ';\n'
+        else:
+            self.DotString += 'node' + str(node.data) + 'rc [label=NIL, color=black];\n'
+            self.DotString += 'node' + str(node.data) + ' -- ' + 'node' + str(node.data) + 'rc;\n'
+        self.printCurNode(node.left)
+        self.printCurNode(node.right)
+
+
 rbtree = Rbtree()
+rbtree.printTreeDots()
 rbtree.insert(1)
+rbtree.printTreeDots()
 rbtree.insert(3)
+rbtree.printTreeDots()
 rbtree.insert(5)
+rbtree.printTreeDots()
 rbtree.insert(7)
+rbtree.printTreeDots()
 rbtree.insert(9)
+rbtree.printTreeDots()
 rbtree.insert(8)
+rbtree.printTreeDots()
 rbtree.insert(6)
+rbtree.printTreeDots()
 rbtree.insert(4)
+rbtree.printTreeDots()
 rbtree.insert(2)
+rbtree.printTreeDots()
 rbtree.insert(0)
 rbtree.printTree()
+rbtree.printTreeDots()
